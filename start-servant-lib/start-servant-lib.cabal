@@ -51,3 +51,4 @@ library
   hs-source-dirs:   src
 
   exposed-modules: Commence.Types.NonEmptyText
+                 , Commence.Types.Secret 
