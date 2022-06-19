@@ -19,16 +19,16 @@ module Commence.Types.NonEmptyText
   , nonEmptyToTextCoerce
   ) where
 
-import           Prelude  
 import           Control.Lens
 import           Data.Aeson
 import qualified Data.String                    ( IsString(..) )
 import qualified Data.Text                     as T
-import           Web.HttpApiData                    ( FromHttpApiData(..)
-                                                , ToHttpApiData
-                                                )
+import           Prelude
 import           Text.Blaze.Html                ( ToMarkup
                                                 , ToValue
+                                                )
+import           Web.HttpApiData                ( FromHttpApiData(..)
+                                                , ToHttpApiData
                                                 )
 
 -- * NonEmptyText
