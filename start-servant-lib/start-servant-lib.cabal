@@ -52,3 +52,4 @@ library
 
   exposed-modules: Commence.Types.NonEmptyText
                  , Commence.Types.Secret 
+                 , Commence.Types.Wrapped 
