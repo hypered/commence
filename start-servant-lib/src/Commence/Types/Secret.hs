@@ -27,7 +27,6 @@ import           Control.Lens
 import           Data.Aeson
 import qualified GHC.Show                      as Show
 import qualified GHC.TypeLits                  as TL
-import           Prelude
 import           Web.HttpApiData                ( FromHttpApiData )
 
 -- | Exposure level of the secret.

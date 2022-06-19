@@ -7,8 +7,6 @@ module Commence.Types.Wrapped
 
 import           Data.Aeson
 import qualified Data.Text                     as T
-import           GHC.TypeLits
-import           Prelude
 import qualified Web.FormUrlEncoded            as Form
 import           Web.HttpApiData
 

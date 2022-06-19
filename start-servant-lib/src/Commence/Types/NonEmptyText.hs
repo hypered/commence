@@ -23,7 +23,6 @@ import           Control.Lens
 import           Data.Aeson
 import qualified Data.String                    ( IsString(..) )
 import qualified Data.Text                     as T
-import           Prelude
 import           Text.Blaze.Html                ( ToMarkup
                                                 , ToValue
                                                 )

@@ -20,7 +20,6 @@ common common-extensions
     LambdaCase
     TypeApplications
     ScopedTypeVariables
-    NoImplicitPrelude
     GADTs
 
 -- Common language settings
@@ -45,6 +44,12 @@ library
                , aeson
                , blaze
                , blaze-html 
+               -- Dependencies for logging.
+               , pretty-simple
+               , fast-logger
+               , monad-log 
+               , optparse-applicative 
+               , exceptions 
               
   mixins: protolude (Protolude as Prelude) 
 
@@ -53,3 +58,6 @@ library
   exposed-modules: Commence.Types.NonEmptyText
                  , Commence.Types.Secret 
                  , Commence.Types.Wrapped 
+                 -- Logging.
+                 , Commence.Logging 
+                 , Commence.Multilogging 
