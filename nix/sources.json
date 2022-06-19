@@ -1,0 +1,54 @@
+{
+    "brittany": {
+        "branch": "master",
+        "repo": "https://github.com/lspitzner/brittany",
+        "rev": "434f9f8e49b847ef3e648672c5564b6dd0d3be67",
+        "type": "git"
+    },
+    "design-hs": {
+        "branch": "main",
+        "repo": "git@github.com:smartcoop/design-hs.git",
+        "rev": "df7af2217ebb58ea3f5cf2de3bdda473abd9ed60",
+        "type": "git"
+    },
+    "gitignore": {
+        "branch": "master",
+        "description": "Nix function for filtering local git sources",
+        "homepage": "",
+        "owner": "hercules-ci",
+        "repo": "gitignore",
+        "rev": "211907489e9f198594c0eb0ca9256a1949c9d412",
+        "sha256": "06j7wpvj54khw0z10fjyi31kpafkr6hi1k0di13k1xp8kywvfyx8",
+        "type": "tarball",
+        "url": "https://github.com/hercules-ci/gitignore/archive/211907489e9f198594c0eb0ca9256a1949c9d412.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
+    },
+    "niv": {
+        "description": "Easy dependency management for Nix projects",
+        "homepage": "https://github.com/nmattia/niv",
+        "owner": "nmattia",
+        "repo": "niv",
+        "rev": "ba57d5a29b4e0f2085917010380ef3ddc3cf380f",
+        "sha256": "1kpsvc53x821cmjg1khvp1nz7906gczq8mp83664cr15h94sh8i4",
+        "type": "tarball",
+        "url": "https://github.com/nmattia/niv/archive/ba57d5a29b4e0f2085917010380ef3ddc3cf380f.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
+    },
+    "nixpkgs": {
+        "branch": "nixos-20.03",
+        "homepage": "https://github.com/NixOS/nixpkgs",
+        "owner": "NixOS",
+        "repo": "nixpkgs-channels",
+        "rev": "4b6bfecc0bd",
+        "sha256": "0wi8641v4345jcqk7myq3dknczps1gbsf48q314wavl5kga8r67f",
+        "type": "tarball",
+        "url": "https://github.com/NixOS/nixpkgs-channels/archive/4b6bfecc0bd.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
+    },
+    "start-servant": {
+        "branch": "asheshambasta/feature/user-polymorphism-pages",
+        "repo": "git@github.com:noteed/start-servant.git",
+        "rev": "3a98d72d8f73cf86937a59e2667ed4c808a9845e",
+        "type": "git"
+    }
+}

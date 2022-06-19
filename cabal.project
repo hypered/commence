@@ -1,0 +1,4 @@
+packages:
+        ./prototype-hs-lib
+        ./start-servant-lib 
+        
