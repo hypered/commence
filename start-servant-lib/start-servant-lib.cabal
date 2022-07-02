@@ -51,6 +51,8 @@ library
                , http-types 
                , servant 
                , servant-server 
+               , servant-auth-server
+
                -- Data.Map etc.
                , containers
                -- STM
@@ -80,3 +82,4 @@ library
                  , Commence.Runtime.Storage 
                  , Commence.ACL
                  , Commence.ACL.Types 
+                 , Commence.Server.Auth 
