@@ -2,7 +2,7 @@
 {-# LANGUAGE ConstraintKinds #-}
 {-# LANGUAGE TemplateHaskell #-}
 {- |
-Module: MultiLogging
+Module: Commence.MultiLogging
 Description: A generalisation of `MonadLog` and friends (From Control.Monad.Log) but with support for logging over multiple loggers. 
 
 Example use case: consider we want to

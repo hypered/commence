@@ -1,7 +1,7 @@
 {-# LANGUAGE TemplateHaskell   #-}
 {-# LANGUAGE OverloadedStrings #-}
 {- |
-Module: Logging 
+Module: Commence.Logging 
 Description: Custom prelude for start-servant
 
 We import Protolude and re-export it, for the usual protolude niceties;
