@@ -9,6 +9,6 @@ let
   getOverlays = pkg : import "${pkg}/nix/overlays.nix";
 
   # We can overlay haskell packages here.
-  haskellOverlays = [ ] ;
+  haskellOverlays = [ (import ./stm-containers.nix) ] ;
 
 in haskellOverlays ++ [ (import ./overlay.nix) ]

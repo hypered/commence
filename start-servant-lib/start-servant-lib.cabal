@@ -39,18 +39,30 @@ library
   build-depends: base-noprelude >=4.7 && <5
                , protolude
                , lens
+               -- Data 
                , text
+               , bytestring
                , http-api-data
                , aeson
+               -- HTML 
                , blaze
                , blaze-html 
+               -- HTTP
+               , http-types 
+               , servant 
+               , servant-server 
+               -- Data.Map etc.
+               , containers
+               -- STM
+               , stm
+               , stm-containers 
                -- Dependencies for logging.
                , pretty-simple
                , fast-logger
                , monad-log 
                , optparse-applicative 
                , exceptions 
-               -- Commence.Util.Module 
+               -- Commence.Util.Module needs this. 
                , template-haskell 
               
   mixins: protolude (Protolude as Prelude) 
@@ -64,3 +76,5 @@ library
                  , Commence.Logging 
                  , Commence.Multilogging 
                  , Commence.Util.Module 
+                 , Commence.Runtime.Errors
+                 , Commence.Runtime.Storage 

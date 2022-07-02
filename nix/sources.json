@@ -50,5 +50,23 @@
         "repo": "git@github.com:noteed/start-servant.git",
         "rev": "3a98d72d8f73cf86937a59e2667ed4c808a9845e",
         "type": "git"
+    },
+    "stm-containers": {
+        "branch": "master",
+        "repo": "git@github.com:nikita-volkov/stm-containers",
+        "rev": "9682bab53ae2f27354a9869702013774744614b3",
+        "type": "git"
+    },
+    "stm-hamt": {
+        "branch": "master",
+        "repo": "git@github.com:nikita-volkov/stm-hamt",
+        "rev": "81a7b70a79b6be24e751b46aca549cf3fbacc5a7",
+        "type": "git"
+    },
+    "focus": {
+        "ref": "master",
+        "repo": "git@github.com:nikita-volkov/focus",
+        "rev": "5021aa0a2413d523c875317ae38ee8bac02f422b",
+        "type": "git"
     }
 }
