@@ -78,3 +78,5 @@ library
                  , Commence.Util.Module 
                  , Commence.Runtime.Errors
                  , Commence.Runtime.Storage 
+                 , Commence.ACL
+                 , Commence.ACL.Types 
