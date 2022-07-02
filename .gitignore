@@ -3,3 +3,4 @@ result*
 /cabal.project.local
 /.envrc
 /dist/
+/dist-newstyle/
