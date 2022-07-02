@@ -50,6 +50,8 @@ library
                , monad-log 
                , optparse-applicative 
                , exceptions 
+               -- Commence.Util.Module 
+               , template-haskell 
               
   mixins: protolude (Protolude as Prelude) 
 
@@ -61,3 +63,4 @@ library
                  -- Logging.
                  , Commence.Logging 
                  , Commence.Multilogging 
+                 , Commence.Util.Module 
