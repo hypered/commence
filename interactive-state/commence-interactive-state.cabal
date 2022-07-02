@@ -1,5 +1,5 @@
 cabal-version:      2.4
-name:               prototype-hs-lib
+name:               commence-interactive-state
 version:            0.1.0.0
 
 common common-extensions
@@ -41,7 +41,7 @@ library
                  , data-default-class
                  , text
                  , pretty-simple
-                 , start-servant-lib
+                 , commence-core
                  , haskeline 
      
     mixins: protolude (Protolude as Prelude) 

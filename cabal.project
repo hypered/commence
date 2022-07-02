@@ -1,4 +1,4 @@
 packages:
-        ./prototype-hs-lib
-        ./start-servant-lib 
+        ./interactive-state
+        ./core
         
