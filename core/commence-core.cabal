@@ -48,7 +48,6 @@ library
                , blaze
                , blaze-html 
                , blaze-markup
-               , design-hs-lib
                -- HTTP
                , http-types 
                , servant 
@@ -70,7 +69,6 @@ library
                , template-haskell 
               
   mixins: protolude (Protolude as Prelude) 
-        , design-hs-lib hiding (Prelude)
 
   hs-source-dirs:   src
 

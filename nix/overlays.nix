@@ -4,11 +4,10 @@
 let
 
   sources = import ./sources.nix;
-  inherit (sources) design-hs; 
 
   getOverlays = pkg : import "${pkg}/nix/overlay.nix";
 
   # We can overlay haskell packages here.
-  haskellOverlays = [ (getOverlays design-hs) (import ./stm-containers.nix) ] ;
+  haskellOverlays = [ (import ./stm-containers.nix) ] ;
 
 in haskellOverlays ++ [ (import ./overlay.nix) ]

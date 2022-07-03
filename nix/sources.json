@@ -5,12 +5,6 @@
         "rev": "434f9f8e49b847ef3e648672c5564b6dd0d3be67",
         "type": "git"
     },
-    "design-hs": {
-        "branch": "main",
-        "repo": "git@github.com:smartcoop/design-hs.git",
-        "rev": "df7af2217ebb58ea3f5cf2de3bdda473abd9ed60",
-        "type": "git"
-    },
     "gitignore": {
         "branch": "master",
         "description": "Nix function for filtering local git sources",
