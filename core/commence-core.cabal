@@ -87,5 +87,3 @@ library
                  , Commence.ACL.Types 
                  -- Web.
                  , Commence.Server.Auth 
-                 , Commence.Server.Components.Navbar
-                 , Commence.Server.Components.Shared
