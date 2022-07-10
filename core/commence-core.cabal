@@ -1,6 +1,6 @@
 cabal-version:      2.4
 name:               commence-core
-version:            0.1.0.0
+version:            0.2.0.0
 extra-source-files: CHANGELOG.md
 
 common common-extensions
@@ -82,6 +82,8 @@ library
                  , Commence.Multilogging 
                  , Commence.Util.Module 
                  , Commence.Runtime.Errors
+                 , Commence.Runtime.Errors.Mode
+                 , Commence.Runtime.Errors.Code
                  , Commence.Runtime.Storage 
                  , Commence.ACL
                  , Commence.ACL.Types 
