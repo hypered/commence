@@ -158,12 +158,6 @@ instance IsString AppName where
 appNameFromText :: Text -> AppName
 appNameFromText = AppName . T.splitOn "/"
 
-instance StringConv Text AppName where
-  strConv _ = appNameFromText
-
-instance StringConv Str.String AppName where
-  strConv _ = appNameFromText . T.pack
-
 -- | Parse the application name (`AppName`) wherein the sections are separated
 -- by @/@.  Note the use of fromString which ensures we split out the incoming
 -- string properly.
