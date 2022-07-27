@@ -62,7 +62,8 @@ library
                -- Dependencies for logging.
                , pretty-simple
                , fast-logger
-               , monad-log 
+               , monad-logger
+               , monad-logger-extras
                , optparse-applicative 
                , exceptions 
                -- Commence.Util.Module needs this. 
