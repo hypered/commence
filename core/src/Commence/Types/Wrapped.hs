@@ -6,6 +6,7 @@ module Commence.Types.Wrapped
   ) where
 
 import           Data.Aeson
+import           Data.Aeson.Key                 ( fromText, toString )
 import qualified Data.Text                     as T
 import qualified Web.FormUrlEncoded            as Form
 import           Web.HttpApiData
@@ -39,13 +40,13 @@ Example:
 
 -}
 instance (KnownSymbol fieldName, ToJSON t) => ToJSON (Wrapped fieldName t) where
-  toJSON (Wrapped t) = object [fieldNameT @fieldName .= t]
+  toJSON (Wrapped t) = object [fromText (fieldNameT @fieldName) .= t]
 
 -- | Inverse of the @FromJSON@ instance above.  
 instance (KnownSymbol fieldName, FromJSON t) => FromJSON (Wrapped fieldName t) where
-  parseJSON = withObject ("JSON object with field: " <> T.unpack fieldName)
+  parseJSON = withObject ("JSON object with field: " <> toString fieldName)
     $ \obj -> obj .: fieldName <&> Wrapped
-    where fieldName = fieldNameT @fieldName
+    where fieldName = fromText $ fieldNameT @fieldName
 
 fieldNameT :: forall fieldName . KnownSymbol fieldName => Text
 fieldNameT = T.pack . symbolVal $ Proxy @fieldName
