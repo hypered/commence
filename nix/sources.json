@@ -17,6 +17,12 @@
         "url": "https://github.com/hercules-ci/gitignore/archive/211907489e9f198594c0eb0ca9256a1949c9d412.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
+    "monad-log": {
+        "branch": "relax",
+        "repo": "https://github.com/hypered/monad-log",
+        "rev": "68411d9ace39bfb53c6033cbbf5f8db8f43369be",
+        "type": "git"
+    },
     "niv": {
         "branch": "master",
         "description": "Easy dependency management for Nix projects",

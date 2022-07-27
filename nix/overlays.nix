@@ -8,6 +8,6 @@ let
   getOverlays = pkg : import "${pkg}/nix/overlay.nix";
 
   # We can overlay haskell packages here.
-  haskellOverlays = [] ;
+  haskellOverlays = [ (import ./monad-log.nix) ] ;
 
 in haskellOverlays ++ [ (import ./overlay.nix) ]
