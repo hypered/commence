@@ -3,47 +3,54 @@
 {-# LANGUAGE TemplateHaskell #-}
 {- |
 Module: Commence.MultiLogging
-Description: A generalisation of `MonadLog` and friends (From Control.Monad.Log) but with support for logging over multiple loggers. 
+Description: A generalisation of `MonadLog` and friends (From
+Control.Monad.Log) but with support for logging over multiple loggers.
 
 Example use case: consider we want to
 1. Output logs to stdout
 2. Output logs to an HTTP based logging collector.
 
-This module provides abstractions for supporting multiple loggers that can achieve that. 
+This module provides abstractions for supporting multiple loggers that can
+achieve that.
 -}
 module Commence.Multilogging
   (
-  -- * Logging configuration
+  -- * Logging configuration.
     LoggingConf(..)
-  -- ** Configuration lenses. 
+
+  -- ** Configuration lenses.
   , lcOutputs
   , lcRootAppName
   , lcLogLevel
+
   -- ** Parsing the configuration from the CLI.
   , parseLoggingConf
 
-  -- * Multiple loggers in a type-safe newtype. 
+  -- * Multiple loggers in a type-safe newtype.
   , AppNameLoggers(..)
-  -- ** Lenses 
+
+  -- ** Lenses.
   , appNameLoggers
   , localEnv
 
-  -- * Instantiate loggers. 
+  -- * Instantiate loggers.
   , makeDefaultLoggersWithConf
-  -- * Flush and close the loggers, eg. at the end of an application lifecycle. 
+
+  -- * Flush and close the loggers, eg. at the end of an application lifecycle.
   , flushAndCloseLoggers
 
-  -- * Typeclass for monads that support logging over multiple loggers. 
+  -- * Typeclass for monads that support logging over multiple loggers.
   , MonadAppNameLogMulti(..)
 
-  -- * Common logging functions over multiple loggers. 
+  -- * Common logging functions over multiple loggers.
   , debug
   , info
   , warning
   , error
   , critical
 
-  -- * Common logging functions over multiple loggers, with explicit AppName tags. 
+  -- * Common logging functions over multiple loggers, with explicit AppName
+  -- tags.
   , debugEnv
   , infoEnv
   , warningEnv
@@ -66,9 +73,13 @@ import qualified System.Log.FastLogger.File    as FL.File
 
 -- | Configuration for logging.
 data LoggingConf = LoggingConf
-  { _lcOutputs     :: [FL.LogType] -- ^ Multiple logging outputs: logging is disabled if this list is empty.
-  , _lcRootAppName :: L.AppName  -- ^ Application name to use at the root of the logger. 
-  , _lcLogLevel    :: L.Level -- ^ The min. logging level to output. Any logging under this level will be filtered out. 
+  { _lcOutputs     :: [FL.LogType]
+    -- ^ Multiple logging outputs: logging is disabled if this list is empty.
+  , _lcRootAppName :: L.AppName
+    -- ^ Application name to use at the root of the logger.
+  , _lcLogLevel    :: L.Level
+    -- ^ The min. logging level to output. Any logging under this level will be
+    -- filtered out.
   }
 
 -- | Parse the logging configuration from the CLI.
@@ -120,14 +131,14 @@ bufSize optPrefix =
     <> A.value FL.defaultBufSize
     <> A.showDefault
 
--- | A set of multiple loggers. 
+-- | A set of multiple loggers.
 newtype AppNameLoggers = AppNameLoggers { _appNameLoggers :: [L.AppNameLogger]
-                                        -- ^ Multiple loggers to log over. 
+                                        -- ^ Multiple loggers to log over.
                                         }
 
 makeLenses ''AppNameLoggers
 
--- | Generate loggers with a given configuration: generates separate loggers for each LogType specified in the config. 
+-- | Generate loggers with a given configuration: generates separate loggers for each LogType specified in the config.
 makeDefaultLoggersWithConf :: MonadIO m => LoggingConf -> m AppNameLoggers
 makeDefaultLoggersWithConf LoggingConf {..} =
   AppNameLoggers <$> mapM defaultLoggerFor _lcOutputs
@@ -135,21 +146,21 @@ makeDefaultLoggersWithConf LoggingConf {..} =
   defaultLoggerFor logOut =
     L.makeDefaultLogger L.simpleTimeFormat logOut _lcLogLevel _lcRootAppName
 
--- | Clean-up & close the loggers. 
+-- | Clean-up & close the loggers.
 flushAndCloseLoggers :: MonadIO m => AppNameLoggers -> m ()
 flushAndCloseLoggers (AppNameLoggers loggers) =
   liftIO $ mapM_ ML.cleanUp loggers
 
 makeLenses ''LoggingConf
 
--- | A Monad for logging over a collection of logs. 
+-- | A Monad for logging over a collection of logs.
 class MonadAppNameLogMulti m where
-  -- | Get the current set of loggers. 
+  -- | Get the current set of loggers.
   askLoggers :: m AppNameLoggers
-  -- | Locally modified loggers, useful for localised logging envs. 
+  -- | Locally modified loggers, useful for localised logging envs.
   localLoggers :: (L.AppNameLogger -> L.AppNameLogger) -> m a -> m a
 
--- | Local logging environment over multiple loggers. 
+-- | Local logging environment over multiple loggers.
 localEnv
   :: forall m a
    . MonadAppNameLogMulti m
@@ -160,7 +171,7 @@ localEnv modEnv = localLoggers modifyEnv
  where
   modifyEnv logger = logger { ML.environment = modEnv (ML.environment logger) }
 
--- | A unified set of minimal constraints required for us to be able to log over multiple loggers. 
+-- | A unified set of minimal constraints required for us to be able to log over multiple loggers.
 type LoggingConstraints m = (MonadIO m, MonadMask m, MonadAppNameLogMulti m)
 
 debug :: LoggingConstraints m => Text -> m ()

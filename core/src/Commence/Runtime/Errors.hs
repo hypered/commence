@@ -7,7 +7,8 @@
 Module: Commence.Runtime.Errors
 Description: Custom errors and support for throwing these errors in some monad.
 
-We introduce RuntimeErr's that can be used to wrap either errors that are instances of `IsRuntimeErr`; or exceptions that are otherwise not handled.
+We introduce RuntimeErr's that can be used to wrap either errors that are
+instances of `IsRuntimeErr`; or exceptions that are otherwise not handled.
 These errors then get mapped to Servant errors.
 
 Consider the following example:
@@ -36,10 +37,13 @@ module Commence.Runtime.Errors
   , asServantError
   ) where
 
-import           Commence.Logging
-import           Control.Lens                  as L
+import qualified Commence.Logging              as L
+import           Control.Lens                   ( (^.)
+                                                , coerced
+                                                )
+import qualified Control.Lens                  as Lens
 import qualified Data.ByteString.Lazy          as BSL
-import qualified Data.String                -- Required from the handrolled IsString instance. 
+import qualified Data.String            -- Required from the handrolled IsString instance.
 import qualified Data.Text                     as T
 import qualified Data.Text.Encoding            as TE
 import qualified GHC.Show                      as Show
@@ -50,8 +54,8 @@ import           Servant.Server                 ( ServerError(..) )
 newtype ErrCode = ErrCode [Text]
                 deriving (Eq, Show, Monoid, Semigroup) via [Text]
 
-instance TextShow ErrCode where
-  showb = showb . showErrCode
+instance L.TextShow ErrCode where
+  showb = L.showb . showErrCode
 
 -- | Reverse of the IsString instance (below)
 showErrCode (ErrCode envs) = T.toUpper . T.intercalate "." $ envs
@@ -60,7 +64,7 @@ showErrCode (ErrCode envs) = T.toUpper . T.intercalate "." $ envs
 instance IsString ErrCode where
   fromString = ErrCode . T.splitOn "." . T.toUpper . T.pack
 
--- brittany-disable-next-binding 
+-- brittany-disable-next-binding
 -- | A generalised error
 data RuntimeErr where
   -- | Capture known error types.
@@ -98,7 +102,7 @@ class IsRuntimeErr e where
 
   -- | Header information to supply for returning errors over HTTP.
   httpHeaders :: e -> [Header]
-  httpHeaders e = [("x-err-code", errCode e ^. coerced . L.to showErrCode . L.to TE.encodeUtf8)]
+  httpHeaders e = [("X-Error-Code", errCode e ^. coerced . Lens.to showErrCode . Lens.to TE.encodeUtf8)]
 
 instance Show RuntimeErr where
   show = T.unpack . displayErr

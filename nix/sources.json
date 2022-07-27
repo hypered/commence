@@ -2,7 +2,7 @@
     "brittany": {
         "branch": "master",
         "repo": "https://github.com/lspitzner/brittany",
-        "rev": "434f9f8e49b847ef3e648672c5564b6dd0d3be67",
+        "rev": "0aa04af4eba499b81fdfb401d98414e7731583cc",
         "type": "git"
     },
     "gitignore": {
@@ -17,50 +17,34 @@
         "url": "https://github.com/hercules-ci/gitignore/archive/211907489e9f198594c0eb0ca9256a1949c9d412.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
+    "monad-log": {
+        "branch": "relax",
+        "repo": "https://github.com/hypered/monad-log",
+        "rev": "68411d9ace39bfb53c6033cbbf5f8db8f43369be",
+        "type": "git"
+    },
     "niv": {
+        "branch": "master",
         "description": "Easy dependency management for Nix projects",
         "homepage": "https://github.com/nmattia/niv",
         "owner": "nmattia",
         "repo": "niv",
-        "rev": "ba57d5a29b4e0f2085917010380ef3ddc3cf380f",
-        "sha256": "1kpsvc53x821cmjg1khvp1nz7906gczq8mp83664cr15h94sh8i4",
+        "rev": "82e5cd1ad3c387863f0545d7591512e76ab0fc41",
+        "sha256": "090l219mzc0gi33i3psgph6s2pwsc8qy4lyrqjdj4qzkvmaj65a7",
         "type": "tarball",
-        "url": "https://github.com/nmattia/niv/archive/ba57d5a29b4e0f2085917010380ef3ddc3cf380f.tar.gz",
+        "url": "https://github.com/nmattia/niv/archive/82e5cd1ad3c387863f0545d7591512e76ab0fc41.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "nixpkgs": {
-        "branch": "nixos-20.03",
+        "branch": "nixos-22.05",
+        "description": "Nix Packages collection",
         "homepage": "https://github.com/NixOS/nixpkgs",
         "owner": "NixOS",
-        "repo": "nixpkgs-channels",
-        "rev": "4b6bfecc0bd",
-        "sha256": "0wi8641v4345jcqk7myq3dknczps1gbsf48q314wavl5kga8r67f",
+        "repo": "nixpkgs",
+        "rev": "f0fa012b649a47e408291e96a15672a4fe925d65",
+        "sha256": "1396yvf3ayhdyyx6wsyivpj5afbs119pqsqv6wxjx1liwr8h74w0",
         "type": "tarball",
-        "url": "https://github.com/NixOS/nixpkgs-channels/archive/4b6bfecc0bd.tar.gz",
+        "url": "https://github.com/NixOS/nixpkgs/archive/f0fa012b649a47e408291e96a15672a4fe925d65.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
-    },
-    "start-servant": {
-        "branch": "asheshambasta/feature/user-polymorphism-pages",
-        "repo": "git@github.com:noteed/start-servant.git",
-        "rev": "3a98d72d8f73cf86937a59e2667ed4c808a9845e",
-        "type": "git"
-    },
-    "stm-containers": {
-        "branch": "master",
-        "repo": "git@github.com:nikita-volkov/stm-containers",
-        "rev": "9682bab53ae2f27354a9869702013774744614b3",
-        "type": "git"
-    },
-    "stm-hamt": {
-        "branch": "master",
-        "repo": "git@github.com:nikita-volkov/stm-hamt",
-        "rev": "81a7b70a79b6be24e751b46aca549cf3fbacc5a7",
-        "type": "git"
-    },
-    "focus": {
-        "ref": "master",
-        "repo": "git@github.com:nikita-volkov/focus",
-        "rev": "5021aa0a2413d523c875317ae38ee8bac02f422b",
-        "type": "git"
     }
 }
