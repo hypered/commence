@@ -7,11 +7,14 @@
 Module: Commence.ACL
 Description: ACL permissions mock module.
 
-The core ideas of this module have been inspired by: <https://tailscale.com/blog/rbac-like-it-was-meant-to-be/ RBAC as it was meant to be>
+The core ideas of this module have been inspired by:
+<https://tailscale.com/blog/rbac-like-it-was-meant-to-be/ RBAC as it was meant
+to be>
 
-As the reader may guess, the right permission model is the one that suits a particular use case.
-And we're probably not going to adhere to the recommendations in the article word by word, but develop a model
-that suits our use case.
+As the reader may guess, the right permission model is the one that suits a
+particular use case. And we're probably not going to adhere to the
+recommendations in the article word by word, but develop a model that suits our
+use case.
 
 -}
 module Commence.ACL
@@ -40,7 +43,7 @@ module Commence.ACL
   ) where
 
 import           Commence.ACL.Types            as ACLTypes
-import qualified Commence.Logging              as Logging
+import qualified Commence.Logging              as L
 import qualified Commence.Runtime.Errors       as Errs
 import qualified Data.Map                      as Map
 import qualified Data.Set                      as Set
@@ -109,7 +112,8 @@ Logically, this flow can be broken down in the following:
 
 1. Get all TagGrants the grantee has over this resource. 
 
-2. Check if the super tag grants of the desired grant match any of the found tag-grants. 
+2. Check if the super tag grants of the desired grant match any of the found
+tag-grants. 
 -}
 authorize
   :: forall (tg :: TagGrant) grantee res m
@@ -134,7 +138,8 @@ authorizeV
   -> m (ResourceAuth tg res)
 authorizeV grantee tagGrant resource =
   let
-    -- first get all the TagRels that have tags that match with at least one tag of the resource.
+      -- First get all the TagRels that have tags that match with at least one
+      -- tag of the resource.
       overlappingTagRels = Map.filter hasResourceTags granteeTagRels
       -- These are all the grants the user has over this resource.
       matchingTagGrants  = Map.keysSet overlappingTagRels
@@ -143,8 +148,8 @@ authorizeV grantee tagGrant resource =
         else accessDenied matchingTagGrants
  where
   hasResourceTags userTags = not $ resourceTags' `Set.disjoint` userTags
-  -- All grants superior to the grant requested, if the user has any of these grants
-  -- on the resource, we're good to allow the authorization.
+  -- All grants superior to the grant requested, if the user has any of these
+  -- grants on the resource, we're good to allow the authorization.
   superTagGrants' = superTagGrants tagGrant
   granteeTagRels  = granteeTags grantee
   resourceTags'   = resourceTags resource
@@ -153,7 +158,7 @@ authorizeV grantee tagGrant resource =
 -- | Try multiple authorizations fallbacks.
 authorizeEither
   :: forall m res tgPref tgFallback
-   . (MonadError Errs.RuntimeErr m, Logging.MonadLog Logging.AppName m)
+   . (MonadError Errs.RuntimeErr m, L.MonadLog L.AppName m)
   => m (ResourceAuth tgPref res) -- ^ Preferred authorization
   -> m (ResourceAuth tgFallback res) -- ^ Fallback authorization
   -> m (Either (ResourceAuth tgPref res) (ResourceAuth tgFallback res))
@@ -161,4 +166,4 @@ authorizeEither preferred fallback =
   (Left <$> preferred) `catchError` logErrorFallback
  where
   logErrorFallback err = logErr >> (Right <$> fallback)
-    where logErr = Logging.error (Errs.displayErr err)
+    where logErr = L.error (Errs.displayErr err)
