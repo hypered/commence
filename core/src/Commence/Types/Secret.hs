@@ -27,10 +27,11 @@ import           Control.Lens
 import           Data.Aeson
 import qualified GHC.Show                      as Show
 import qualified GHC.TypeLits                  as TL
+import qualified Text.Blaze.Html               as H
 import           Web.HttpApiData                ( FromHttpApiData )
 
 -- | Exposure level of the secret.
-data SecretExp = ToJSONExp
+data SecretExp = ToJSONExp | ToMarkupExp
   deriving (Eq, Show)
 
 -- | Constraint: result in type errors when not met, empty otherwise.
@@ -92,8 +93,11 @@ makeLenses ''Secret
 instance Typeable s => Show (Secret exp s) where
   show (Secret (_ :: s)) = "Secret :: " <> show (typeRep $ Proxy @s)
 
--- | Secrets that can be exposed via ToJSON
+-- | Secrets that can be exposed via `ToJSON`
 deriving via s instance (ToJSON s, HasExp 'ToJSONExp exps) => ToJSON (Secret exps s)
+
+-- | Secrets that can be exposed via `H.ToMarkup`
+deriving via s instance (H.ToMarkup s, HasExp 'ToMarkupExp exps) => H.ToMarkup (Secret exps s)
 
 (=:=) :: Eq a => Secret exp0 a -> Secret exp1 a -> Bool
 Secret s0 =:= Secret s1 = s0 == s1
