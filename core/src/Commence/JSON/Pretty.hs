@@ -78,6 +78,7 @@ type family ModifyJSONs (opts :: [Opt]) :: Constraint where
   ModifyJSONs '[] = ()
   ModifyJSONs (opt ': opts) = (ModifyJSON opt, ModifyJSONs opts)
 
+-- brittany-disable-next-binding 
 -- | Modifications when we want to clean up field names: non alpha-numeric leading characters can be removed. 
 instance ModifyJSON 'CleanupFieldNames where
   modifyJSON = \case
@@ -91,15 +92,18 @@ instance ModifyJSON 'CleanupFieldNames where
      where
       cleanupKey k v newKM =
         let cleanKey = over _head toLower . T.dropWhile (not . isAlphaNum) $ k
-        in  Map.insert cleanKey v newKM
+        in  Map.insert cleanKey (modifyJSON @'CleanupFieldNames v) newKM
+
+    Array vs -> Array $ modifyJSON @'CleanupFieldNames <$> vs
 
     other -> other
 
+-- brittany-disable-next-binding 
 -- | Drop null values in arrays and objects. 
 instance ModifyJSON 'DropNulls where
   modifyJSON = \case
-    Object km -> Object $ KM.filter (/= Null) km
-    Array  vs -> Array $ V.filter (/= Null) vs
+    Object km -> Object . KM.map (modifyJSON @'DropNulls) . KM.filter (/= Null) $ km
+    Array  vs -> Array . V.map (modifyJSON @'DropNulls) . V.filter (/= Null) $ vs
     other     -> other
 
 instance ( ToJSON a
