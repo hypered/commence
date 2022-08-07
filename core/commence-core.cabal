@@ -44,6 +44,7 @@ library
                , bytestring
                , http-api-data
                , aeson
+               , vector
                -- HTML 
                , blaze
                , blaze-html 
@@ -85,3 +86,5 @@ library
                  , Commence.ACL.Types 
                  -- Web.
                  , Commence.Server.Auth 
+                 --  JSON helpers. 
+                 , Commence.JSON.Pretty
