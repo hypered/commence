@@ -1,3 +1,5 @@
+{-# LANGUAGE FunctionalDependencies #-}
+{-# LANGUAGE AllowAmbiguousTypes #-}
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE TypeFamilies #-}
 {- |
@@ -19,6 +21,7 @@ definition of the @m@ in which they operate.
 module Commence.Runtime.Storage
   ( DBIdentity(..)
   , DBStorage(..)
+  , DBTransaction(..)
   , DBStorageOps(..)
   -- * Performing updates and getting values. 
   , gettingAffected
@@ -46,45 +49,77 @@ class DBIdentity a => DBStorageOps a where
   -- | A sum type, usually, indicating the kinds of queries that can be run to update/insert/delete values.
   data DBUpdate a :: Type
 
+-- | If some @m@ supports atomic transactions, it must implement this class. 
+class DBTransaction (m :: Type -> Type) (txn :: Type -> Type) | m -> txn where
+
+  -- | Lift a transactional computation to the underlying @m@.
+  liftTxn :: forall b . txn b -> m (Either Errs.RuntimeErr b)
+
 -- | Same as `DBStorageOps`; but here we define /how/ we run the operations defined.
 class ( DBIdentity a
       , DBStorageOps a
       , MonadError Errs.RuntimeErr m
-      ) => DBStorage m a where
+      , DBTransaction m txn
+      ) => DBStorage m txn a where
+
+  -- | The datatype representing the database. 
+  type Db m txn a :: Type
+
+  -- | The errors raised when a DB operation fails.
+  type DBError m txn a :: Type
+
   -- | Execute an update, reporting the list of IDs that were affected due to it.
-  dbUpdate :: DBUpdate a -> m [DBId a]
+  dbUpdate :: Db m txn a -> DBUpdate a -> txn (Either (DBError m txn a) [DBId a])
 
   -- | Execute a select, returning the rows that were matched by the query.
-  dbSelect :: DBSelect a -> m [a]
+  dbSelect :: Db m txn a -> DBSelect a -> txn [a]
 
 -- | Perform a DBUpdate and get all the affected entities. 
 gettingAffected
-  :: forall a m
-   . DBStorage m a
-  => (DBId a -> DBSelect a)
+  :: forall a m txn
+   . ( DBStorage m txn a
+     , Monad txn
+     , MonadError Errs.RuntimeErr m
+     , Errs.IsRuntimeErr (DBError m txn a)
+     )
+  => Db m txn a
+  -> (DBId a -> DBSelect a)
   -> DBUpdate a
   -> m [a]
-gettingAffected mkSelect = dbUpdate >=> concatMapM (dbSelect . mkSelect)
+gettingAffected db mkSelect u =
+  either throwError' pure . join =<< liftTxn @m performUpdate
+ where
+  performUpdate = dbUpdate @m db u >>= \case
+    Left  err -> pure $ Left (Errs.knownErr err)
+    Right ids -> Right <$> concatMapM (dbSelect @m @txn db . mkSelect) ids
+
 
 -- | Perform a DBUpdate and get the first of the affected entities. 
 gettingAffectedFirstMaybe
-  :: forall a m
-   . DBStorage m a
-  => (DBId a -> DBSelect a)
+  :: forall a m txn
+   . (DBStorage m txn a, Monad txn, Errs.IsRuntimeErr (DBError m txn a))
+  => Db m txn a
+  -> (DBId a -> DBSelect a)
   -> DBUpdate a
   -> m (Maybe a)
-gettingAffectedFirstMaybe mkSelect =
-  gettingAffected mkSelect >=> pure . headMay
+gettingAffectedFirstMaybe db mkSelect =
+  gettingAffected db mkSelect >=> pure . headMay
 
 -- | Perform a DBUpdate and get the first of the affected entities: but throw errors when no resources can be retrieved. 
 gettingAffectedFirstErr
-  :: forall a m
-   . (DBStorage m a, MonadError Errs.RuntimeErr m, Typeable a)
-  => (DBId a -> DBSelect a)
+  :: forall a m txn
+   . ( DBStorage m txn a
+     , Monad txn
+     , MonadError Errs.RuntimeErr m
+     , Errs.IsRuntimeErr (DBError m txn a)
+     , Typeable a
+     )
+  => Db m txn a
+  -> (DBId a -> DBSelect a)
   -> DBUpdate a
   -> m a
-gettingAffectedFirstErr mkSelect =
-  gettingAffectedFirstMaybe mkSelect >=> maybe resourceNotFound pure
+gettingAffectedFirstErr db mkSelect =
+  gettingAffectedFirstMaybe db mkSelect >=> maybe resourceNotFound pure
  where
   resourceNotFound =
     Errs.throwError'
