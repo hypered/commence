@@ -52,18 +52,13 @@ module Commence.JSON.Pretty
   , ModifyJSONs
   ) where
 
-import           Control.Lens
 import           Data.Aeson
 import qualified Data.Aeson.KeyMap             as KM
-import qualified Data.Map                      as Map
-import qualified Data.Text                     as T
 import           Data.Vector                   as V
 
 -- | Options non how to modify JSONs.
-data Opt =
-  CleanupFieldNames -- ^ Cleanup field names: drop leading non-alpha-num chars, use proper case for leading char. 
-  | DropNulls
-          deriving (Eq, Show)
+data Opt = DropNulls
+  deriving (Eq, Show)
 
 -- | A newtype wrapper that prettifies the JSON output.
 newtype PrettyJSON (opts :: [Opt]) a = PrettyJSON { _unPrettyJSON :: a }
@@ -77,26 +72,6 @@ class ModifyJSON (opt :: Opt) where
 type family ModifyJSONs (opts :: [Opt]) :: Constraint where
   ModifyJSONs '[] = ()
   ModifyJSONs (opt ': opts) = (ModifyJSON opt, ModifyJSONs opts)
-
--- brittany-disable-next-binding 
--- | Modifications when we want to clean up field names: non alpha-numeric leading characters can be removed. 
-instance ModifyJSON 'CleanupFieldNames where
-  modifyJSON = \case
-    Object km ->
-      -- since the new versions of Aeson give us an opaque Key datatype (for reasons that are beyond my understanding)
-      -- we need to go via conversion to a Map Text Value and back to the new and "fancy" KeyValue. 
-      Object
-        . KM.fromMapText
-        . Map.foldrWithKey' cleanupKey mempty
-        $ KM.toMapText km
-     where
-      cleanupKey k v newKM =
-        let cleanKey = over _head toLower . T.dropWhile (not . isAlphaNum) $ k
-        in  Map.insert cleanKey (modifyJSON @'CleanupFieldNames v) newKM
-
-    Array vs -> Array $ modifyJSON @'CleanupFieldNames <$> vs
-
-    other -> other
 
 -- brittany-disable-next-binding 
 -- | Drop null values in arrays and objects. 
