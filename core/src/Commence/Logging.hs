@@ -21,7 +21,7 @@ module Commence.Logging
   , ML.localEnv
   , ML.Logger
   , ML.Level(..)
-  , ML.LogType(..)
+  , ML.LogType
   , ML.simpleTimeFormat
   , ML.makeDefaultLogger
   , ML.TextShow(..)
