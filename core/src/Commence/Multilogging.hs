@@ -39,6 +39,9 @@ module Commence.Multilogging
   -- * Flush and close the loggers, eg. at the end of an application lifecycle.
   , flushAndCloseLoggers
 
+  -- * Run a LogT over all loggers. 
+  , runAppNameLoggers 
+
   -- * Typeclass for monads that support logging over multiple loggers.
   , MonadAppNameLogMulti(..)
 
@@ -137,6 +140,10 @@ newtype AppNameLoggers = AppNameLoggers { _appNameLoggers :: [L.AppNameLogger]
                                         }
 
 makeLenses ''AppNameLoggers
+
+-- | Evaluate a given `ML.LogT` operation over all the loggers. 
+runAppNameLoggers :: forall m a . (MonadIO m, MonadMask m) => AppNameLoggers -> ML.LogT L.AppName m a -> m () 
+runAppNameLoggers (AppNameLoggers loggers) msg = mapM_ (`ML.runLogTSafe` msg) loggers 
 
 -- | Generate loggers with a given configuration: generates separate loggers for each LogType specified in the config.
 makeDefaultLoggersWithConf :: MonadIO m => LoggingConf -> m AppNameLoggers
