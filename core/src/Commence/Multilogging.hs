@@ -17,9 +17,10 @@ module Commence.Multilogging
   (
   -- * Logging configuration.
     LoggingConf(..)
+  , LoggingOutput(..)
 
   -- ** Configuration lenses.
-  , lcOutputs
+  , lcOutput
   , lcRootAppName
   , lcLogLevel
 
@@ -73,23 +74,28 @@ import qualified System.Log.FastLogger.File    as FL.File
 
 -- | Configuration for logging.
 data LoggingConf = LoggingConf
-  { _lcOutputs     :: [FL.LogType]
-    -- ^ Multiple logging outputs: logging is disabled if this list is empty.
+  { _lcOutput      :: LoggingOutput
+    -- ^ Initial logging output.
   , _lcRootAppName :: L.AppName
     -- ^ Application name to use at the root of the logger.
   , _lcLogLevel    :: L.Level
     -- ^ The min. logging level to output. Any logging under this level will be
     -- filtered out.
   }
+  deriving (Eq, Show)
+
+data LoggingOutput = LoggingFile FilePath | LoggingStdout | NoLogging
+  deriving (Eq, Show)
 
 -- | Parse the logging configuration from the CLI.
 parseLoggingConf :: A.Parser LoggingConf
 parseLoggingConf = do
-  _lcOutputs     <- A.many parseLogType
+  _lcOutput      <- parseLogType
   _lcRootAppName <- L.parseAppName
   _lcLogLevel    <- logLevel
   pure LoggingConf { .. }
 
+logLevel :: A.Parser ML.Level
 logLevel =
   A.option (A.eitherReader readEither)
     $  A.long "logging-level"
@@ -97,39 +103,25 @@ logLevel =
     <> A.showDefault
     <> A.metavar "LOGGING_LEVEL"
 
-parseLogType :: A.Parser FL.LogType
-parseLogType = off <|> logStdout <|> logStderr <|> fileNoRot <|> file
+parseLogType :: A.Parser LoggingOutput
+parseLogType = off <|> logStdout <|> file
 
-off = A.flag' FL.LogNone $ A.long "logging-off" <> A.help "Turn logging off."
-logStdout = FL.LogStdout <$> bufSize "stdout-logging-"
-logStderr = FL.LogStderr <$> bufSize "stderr-logging-"
-fileNoRot = FL.LogFileNoRotate <$> fpath optPrefix <*> bufSize optPrefix
-  where optPrefix = "file-logging-no-rotate-"
+off :: A.Parser LoggingOutput
+off = A.flag' NoLogging $ A.long "no-logging" <> A.help "Turn logging off."
 
-file = FL.LogFile <$> logSpec <*> bufSize optPrefix
- where
-  logSpec = FL.File.FileLogSpec <$> fpath optPrefix <*> fsize <*> fbackupNumber
-  optPrefix = "file-logging-"
-  fsize =
-    fmap abs . A.option A.auto $ A.long (optPrefix <> "file-size") <> A.metavar
-      "BYTES"
+logStdout :: A.Parser LoggingOutput
+logStdout =
+  A.flag' LoggingStdout $ A.long "stdout" <> A.help "Log to stdout."
 
-fbackupNumber =
-  fmap abs
-    .  A.option A.auto
-    $  A.long "logging-file-backup-number"
-    <> A.help "The backup number of the logging file."
-    <> A.metavar "INT"
-
-fpath optPrefix =
-  A.strOption $ A.long (optPrefix <> "logging-file-name") <> A.help
-    "Path to the logging file."
-bufSize optPrefix =
-  A.option A.auto
-    $  A.long (optPrefix <> "buf-size")
-    <> A.metavar "BYTES"
-    <> A.value FL.defaultBufSize
-    <> A.showDefault
+file :: A.Parser LoggingOutput
+file =
+  LoggingFile
+    <$> (  A.strOption
+        $  A.long "log"
+        <> A.value "./curiosity.log"
+        <> A.showDefault
+        <> A.metavar "PATH"
+        )
 
 -- | A set of multiple loggers.
 newtype AppNameLoggers = AppNameLoggers { _appNameLoggers :: [L.AppNameLogger]
@@ -138,13 +130,28 @@ newtype AppNameLoggers = AppNameLoggers { _appNameLoggers :: [L.AppNameLogger]
 
 makeLenses ''AppNameLoggers
 
--- | Generate loggers with a given configuration: generates separate loggers for each LogType specified in the config.
+-- | Generate an initial logger for a given configuration.
 makeDefaultLoggersWithConf :: MonadIO m => LoggingConf -> m AppNameLoggers
-makeDefaultLoggersWithConf LoggingConf {..} =
-  AppNameLoggers <$> mapM defaultLoggerFor _lcOutputs
- where
-  defaultLoggerFor logOut =
-    L.makeDefaultLogger L.simpleTimeFormat logOut _lcLogLevel _lcRootAppName
+makeDefaultLoggersWithConf LoggingConf {..} = case _lcOutput of
+  NoLogging -> pure $ AppNameLoggers []
+  LoggingStdout ->
+    AppNameLoggers
+      .   (: [])
+      <$> L.makeDefaultLogger L.simpleTimeFormat
+                              (FL.LogStdout 1024)
+                              _lcLogLevel
+                              _lcRootAppName
+  LoggingFile path ->
+    AppNameLoggers
+      .   (: [])
+      <$> L.makeDefaultLogger L.simpleTimeFormat
+                              (FL.LogFile (flspec path) 1024)
+                              _lcLogLevel
+                              _lcRootAppName
+
+flspec :: FilePath -> FL.FileLogSpec
+flspec path = FL.FileLogSpec path (1024 * 1024) 10
+  -- 1MB, or about 5240 200-character lines, and keeping 10 rotated files.
 
 -- | Clean-up & close the loggers.
 flushAndCloseLoggers :: MonadIO m => AppNameLoggers -> m ()
