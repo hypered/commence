@@ -68,7 +68,7 @@ module Commence.Logging
 
 import           Control.Lens
 import qualified Control.Monad.Log             as ML
-import qualified Data.String                   as Str -- required for IsString instance.
+import qualified Data.String                   as Str  -- required for IsString instance.
 import qualified Data.Text                     as T
 import qualified Data.Text.Lazy                as TL
 import qualified Options.Applicative           as A
@@ -163,8 +163,10 @@ appNameFromText = AppName . T.splitOn "/"
 -- string properly.
 parseAppName :: A.Parser AppName
 parseAppName = Str.fromString <$> A.strOption
-  (A.long "logging-root-app-name" <> A.metavar "STRING" <> A.help
-    "Application name: sections separated by `/`"
+  (  A.long "logging-root-app-name"
+  <> A.value "Curiosity"
+  <> A.metavar "STRING"
+  <> A.help "Application name: sections separated by `/`"
   )
 
 -- | The default pretty show expects lazy text, which is not compatible with
