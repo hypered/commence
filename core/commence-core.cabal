@@ -68,6 +68,13 @@ library
                , exceptions 
                -- Commence.Util.Module needs this. 
                , template-haskell 
+               -- Dependencies for WaiAppStatic.Storage.Filesystem.Extended.
+               , cryptonite
+               , filepath
+               , memory
+               , unix-compat
+               , wai
+               , wai-app-static
               
   mixins: protolude (Protolude as Prelude) 
 
@@ -88,3 +95,4 @@ library
                  , Commence.Server.Auth 
                  --  JSON helpers. 
                  , Commence.JSON.Pretty
+                 , WaiAppStatic.Storage.Filesystem.Extended
