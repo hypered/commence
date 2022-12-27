@@ -70,7 +70,6 @@ import           Control.Monad.Catch            ( MonadMask )
 import qualified Control.Monad.Log             as ML
 import qualified Options.Applicative           as A
 import qualified System.Log.FastLogger         as FL
-import qualified System.Log.FastLogger.File    as FL.File
 
 -- | Configuration for logging.
 data LoggingConf = LoggingConf
