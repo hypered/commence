@@ -97,6 +97,7 @@ webAppLookup hashFunc prefix pieces = fileHelperLR hashFunc fp lastPiece
   extensions =
     [ ".cast"
     , ".css"
+    , ".gz"
     , ".ico"
     , ".jpg"
     , ".js"
@@ -108,6 +109,7 @@ webAppLookup hashFunc prefix pieces = fileHelperLR hashFunc fp lastPiece
     , ".txt"
     , ".woff"
     , ".woff2"
+    , ".xml"
     ]
 
 -- | Convenience wrapper for @fileHelper@.
