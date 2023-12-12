@@ -98,6 +98,7 @@ class IsRuntimeErr e where
   default displayErr :: Show e => e -> Text
   displayErr e = T.unwords [ "httpStatus =", show $ httpStatus e
                            , "userMessage =", fromMaybe "" (userMessage e)
+                           , "errCode =", show $ errCode e
                            ]
 
   -- | Header information to supply for returning errors over HTTP.
@@ -130,6 +131,11 @@ instance IsRuntimeErr RuntimeErr where
     RuntimeException e ->
       T.unwords ["RuntimeException", show e, T.pack $ displayException e]
 
+  httpHeaders = \case
+    KnownErr e -> httpHeaders e
+    RuntimeException _ ->
+      [("X-Error-Code", "ERR.RUNTIME.EXCEPTION")]
+
 -- | Map out a known error to a `ServerError` (from Servant)
 asServantError :: IsRuntimeErr e => e -> ServerError
 asServantError e = ServerError
@@ -140,7 +146,7 @@ asServantError e = ServerError
  where
   Status errHTTPCode statusMessage = httpStatus e
   errBody =
-    maybe "No known reason." (BSL.fromStrict . TE.encodeUtf8) $ userMessage e
+    maybe "An unknown error occurred." (BSL.fromStrict . TE.encodeUtf8) $ userMessage e
 
 instance MonadError RuntimeErr (Either RuntimeErr) where
   throwError = Left
