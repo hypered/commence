@@ -12,7 +12,6 @@ in {
   # The format is `{ <pkgName> : <pkgDir> }` (we refer to this as pInfo)
   # The used directory should be the path of the directory relative to the root of the project.
   pkgList = {
-    commence-interactive-state = ../interactive-state;
     commence-core = ../core;
   };
   # Get an attribute from a string path from a larger attrSet

@@ -1,4 +1,2 @@
 packages:
-        ./interactive-state
         ./core
-        
