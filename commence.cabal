@@ -5,21 +5,22 @@ version:            0.1.1.0
 common common-extensions
   default-language: Haskell2010
   default-extensions:
-    TupleSections 
-    StrictData
-    MultiParamTypeClasses
+    DeriveGeneric
     DerivingStrategies
     DerivingVia
-    DeriveGeneric
-    RecordWildCards
-    TypeSynonymInstances
-    FlexibleInstances
     FlexibleContexts
-    UndecidableInstances
-    LambdaCase
-    TypeApplications
-    ScopedTypeVariables
+    FlexibleInstances
     GADTs
+    LambdaCase
+    MultiParamTypeClasses
+    NoImplicitPrelude
+    RecordWildCards
+    ScopedTypeVariables
+    StrictData
+    TupleSections
+    TypeApplications
+    TypeSynonymInstances
+    UndecidableInstances
 
 -- Common language settings
 common lang-settings
@@ -33,40 +34,40 @@ common lang-settings
 library
 
   import: common-extensions
-        , lang-settings 
+        , lang-settings
 
   build-depends: base-noprelude >=4.7 && <5
                , protolude
                , lens
-               -- Data 
+               -- Data
                , text
                , bytestring
                , http-api-data
                , aeson
                , vector
-               -- HTML 
+               -- HTML
                , blaze
-               , blaze-html 
+               , blaze-html
                , blaze-markup
                -- HTTP
-               , http-types 
-               , servant 
-               , servant-server 
+               , http-types
+               , servant
+               , servant-server
                , servant-auth-server
 
                -- Data.Map etc.
                , containers
                -- STM
                , stm
-               , stm-containers 
+               , stm-containers
                -- Dependencies for logging.
                , pretty-simple
                , fast-logger
                , monad-log
-               , optparse-applicative 
-               , exceptions 
-               -- Commence.Util.Module needs this. 
-               , template-haskell 
+               , optparse-applicative
+               , exceptions
+               -- Commence.Util.Module needs this.
+               , template-haskell
                -- Dependencies for WaiAppStatic.Storage.Filesystem.Extended.
                , cryptonite
                , filepath
@@ -74,24 +75,22 @@ library
                , unix-compat
                , wai
                , wai-app-static
-              
-  mixins: protolude (Protolude as Prelude) 
 
   hs-source-dirs:   src
 
   exposed-modules: Commence.Types.NonEmptyText
-                 , Commence.Types.Secret 
-                 , Commence.Types.Wrapped 
+                 , Commence.Types.Secret
+                 , Commence.Types.Wrapped
                  -- Logging.
-                 , Commence.Logging 
-                 , Commence.Multilogging 
-                 , Commence.Util.Module 
+                 , Commence.Logging
+                 , Commence.Multilogging
+                 , Commence.Util.Module
                  , Commence.Runtime.Errors
-                 , Commence.Runtime.Storage 
+                 , Commence.Runtime.Storage
                  , Commence.ACL
-                 , Commence.ACL.Types 
+                 , Commence.ACL.Types
                  -- Web.
-                 , Commence.Server.Auth 
-                 --  JSON helpers. 
+                 , Commence.Server.Auth
+                 --  JSON helpers.
                  , Commence.JSON.Pretty
                  , WaiAppStatic.Storage.Filesystem.Extended

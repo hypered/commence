@@ -49,6 +49,7 @@ import qualified Data.Text.Encoding            as TE
 import qualified GHC.Show                      as Show
 import           Network.HTTP.Types
 import qualified Network.HTTP.Types            as HTTP
+import           Protolude
 import           Servant.Server                 ( ServerError(..) )
 
 newtype ErrCode = ErrCode [Text]
@@ -58,6 +59,7 @@ instance L.TextShow ErrCode where
   showb = L.showb . showErrCode
 
 -- | Reverse of the IsString instance (below)
+showErrCode :: ErrCode -> Text
 showErrCode (ErrCode envs) = T.toUpper . T.intercalate "." $ envs
 
 -- | Take any string; split at @/@; and use it as the ErrCode.

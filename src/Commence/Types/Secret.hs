@@ -27,6 +27,7 @@ import           Control.Lens
 import           Data.Aeson
 import qualified GHC.Show                      as Show
 import qualified GHC.TypeLits                  as TL
+import           Protolude
 import qualified Text.Blaze.Html               as H
 import           Web.HttpApiData                ( FromHttpApiData )
 

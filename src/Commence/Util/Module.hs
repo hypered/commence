@@ -14,6 +14,7 @@ module Commence.Util.Module
 
 import qualified Data.Text                     as T
 import           Language.Haskell.TH
+import           Protolude
 
 -- | Get the name of the module.
 

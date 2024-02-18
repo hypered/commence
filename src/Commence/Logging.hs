@@ -72,6 +72,7 @@ import qualified Data.String                   as Str  -- required for IsString 
 import qualified Data.Text                     as T
 import qualified Data.Text.Lazy                as TL
 import qualified Options.Applicative           as A
+import Protolude
 import qualified Text.Pretty.Simple            as PS
 
 
@@ -147,6 +148,7 @@ instance ML.TextShow AppName where
   showb = ML.showb . showAppName
 
 -- | Reverse of the IsString instance (below)
+showAppName :: AppName -> Text
 showAppName (AppName envs) = T.intercalate "/" envs
 
 makeLenses ''AppName

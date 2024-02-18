@@ -47,6 +47,7 @@ import qualified Commence.Logging              as L
 import qualified Commence.Runtime.Errors       as Errs
 import qualified Data.Map                      as Map
 import qualified Data.Set                      as Set
+import           Protolude
 
 {- | A tagged resource.
 

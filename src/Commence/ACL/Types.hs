@@ -45,6 +45,7 @@ import           Data.Aeson
 import qualified Data.Set                      as Set
 import qualified Data.Text                     as T
 import qualified Network.HTTP.Types            as HTTP
+import           Protolude
 import           Servant.API                    ( FromHttpApiData
                                                 , ToHttpApiData
                                                 )

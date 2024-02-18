@@ -55,6 +55,7 @@ module Commence.JSON.Pretty
 import           Data.Aeson
 import qualified Data.Aeson.KeyMap             as KM
 import           Data.Vector                   as V
+import           Protolude
 
 -- | Options non how to modify JSONs.
 data Opt = DropNulls

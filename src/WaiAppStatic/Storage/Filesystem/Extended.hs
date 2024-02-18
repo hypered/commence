@@ -32,7 +32,7 @@ import           Data.List                      ( init
                                                 )
 import qualified Data.Text                     as T
 import qualified Network.Wai                   as Wai
-import           Prelude                 hiding ( hash )
+import           Protolude               hiding ( hash )
 import           System.FilePath                ( (</>)
                                                 , takeExtension
                                                 )

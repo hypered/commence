@@ -69,6 +69,7 @@ import           Control.Lens
 import           Control.Monad.Catch            ( MonadMask )
 import qualified Control.Monad.Log             as ML
 import qualified Options.Applicative           as A
+import           Protolude
 import qualified System.Log.FastLogger         as FL
 
 -- | Configuration for logging.

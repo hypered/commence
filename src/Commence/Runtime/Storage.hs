@@ -33,6 +33,7 @@ import           Commence.Runtime.Errors       as Errs
 import qualified Data.Text                     as T
 import qualified Data.Typeable                 as Typeable
 import qualified Network.HTTP.Types.Status     as Status
+import           Protolude
 
 -- | A class with the properties indicating that something has some notion of a unique ID in a storage layer.
 -- Eg. for a user, this can be the username/namespace, etc.
