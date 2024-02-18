@@ -163,10 +163,10 @@ appNameFromText = AppName . T.splitOn "/"
 -- | Parse the application name (`AppName`) wherein the sections are separated
 -- by @/@.  Note the use of fromString which ensures we split out the incoming
 -- string properly.
-parseAppName :: A.Parser AppName
-parseAppName = Str.fromString <$> A.strOption
+parseAppName :: Text -> A.Parser AppName
+parseAppName defaultName = Str.fromString <$> A.strOption
   (  A.long "logging-root-app-name"
-  <> A.value "Curiosity"
+  <> A.value (T.unpack defaultName)
   <> A.metavar "STRING"
   <> A.help "Application name: sections separated by `/`"
   )
