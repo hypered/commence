@@ -36,6 +36,7 @@ module Commence.Multilogging
 
   -- * Instantiate loggers.
   , makeDefaultLoggersWithConf
+  , createLoggers
 
   -- * Flush and close the loggers, eg. at the end of an application lifecycle.
   , flushAndCloseLoggers
@@ -44,6 +45,7 @@ module Commence.Multilogging
   , MonadAppNameLogMulti(..)
 
   -- * Common logging functions over multiple loggers.
+  , logInfo
   , debug
   , info
   , warning
@@ -153,6 +155,14 @@ flspec :: FilePath -> FL.FileLogSpec
 flspec path = FL.FileLogSpec path (1024 * 1024) 10
   -- 1MB, or about 5240 200-character lines, and keeping 10 rotated files.
 
+createLoggers :: MonadIO m => LoggingConf -> m AppNameLoggers
+createLoggers loggingConf = liftIO $ do
+  mloggers <- try @SomeException $ makeDefaultLoggersWithConf loggingConf
+  case mloggers of
+    Left loggerErrs -> panic $
+      "Cannot instantiate, logger instantiation failed: " <> show loggerErrs
+    Right loggers -> pure loggers
+
 -- | Clean-up & close the loggers.
 flushAndCloseLoggers :: MonadIO m => AppNameLoggers -> m ()
 flushAndCloseLoggers (AppNameLoggers loggers) =
@@ -178,7 +188,21 @@ localEnv modEnv = localLoggers modifyEnv
  where
   modifyEnv logger = logger { ML.environment = modEnv (ML.environment logger) }
 
--- | A unified set of minimal constraints required for us to be able to log over multiple loggers.
+--------------------------------------------------------------------------------
+-- | Useful to log over some AppNameLoggers without the below constraint
+-- available.
+logInfo
+  :: MonadIO m
+  => (L.AppName -> L.AppName)
+  -> AppNameLoggers
+  -> Text
+  -> m ()
+logInfo env (AppNameLoggers loggers) msg = mapM_ logOver loggers
+  where logOver l = L.runLogT' l . L.localEnv env $ L.info msg
+
+--------------------------------------------------------------------------------
+-- | A unified set of minimal constraints required for us to be able to log
+-- over multiple loggers.
 type LoggingConstraints m = (MonadIO m, MonadMask m, MonadAppNameLogMulti m)
 
 debug :: LoggingConstraints m => Text -> m ()
