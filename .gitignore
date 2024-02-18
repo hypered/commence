@@ -1,3 +1,4 @@
+.*.swp
 result*
 /.direnv/
 /cabal.project.local
