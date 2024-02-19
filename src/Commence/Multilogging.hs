@@ -90,9 +90,9 @@ data LoggingOutput = LoggingFile FilePath | LoggingStdout | NoLogging
   deriving (Eq, Show)
 
 -- | Parse the logging configuration from the CLI.
-parseLoggingConf :: FilePath -> Text -> A.Parser LoggingConf
-parseLoggingConf defaultPath defaultName = do
-  _lcOutput      <- parseLogType defaultPath
+parseLoggingConf :: Text -> A.Parser LoggingConf
+parseLoggingConf defaultName = do
+  _lcOutput      <- parseLogType
   _lcRootAppName <- L.parseAppName defaultName
   _lcLogLevel    <- logLevel
   pure LoggingConf { .. }
@@ -105,8 +105,8 @@ logLevel =
     <> A.showDefault
     <> A.metavar "LOGGING_LEVEL"
 
-parseLogType :: FilePath -> A.Parser LoggingOutput
-parseLogType defaultPath = off <|> logStdout <|> file defaultPath
+parseLogType :: A.Parser LoggingOutput
+parseLogType = off <|> logStdout <|> file <|> pure NoLogging
 
 off :: A.Parser LoggingOutput
 off = A.flag' NoLogging $ A.long "no-logging" <> A.help "Turn logging off."
@@ -115,12 +115,11 @@ logStdout :: A.Parser LoggingOutput
 logStdout =
   A.flag' LoggingStdout $ A.long "stdout" <> A.help "Log to stdout."
 
-file :: FilePath -> A.Parser LoggingOutput
-file defaultPath =
+file :: A.Parser LoggingOutput
+file =
   LoggingFile
     <$> (  A.strOption
         $  A.long "log"
-        <> A.value defaultPath
         <> A.showDefault
         <> A.metavar "PATH"
         )
