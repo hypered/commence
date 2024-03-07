@@ -6,13 +6,12 @@ let
   contents = import ./contents.nix { nixpkgs = super; };
 
   inherit (super.lib.attrsets) mapAttrs;
-  inherit (import sources.gitignore { inherit lib; }) gitignoreSource;
 
   ourOverrides = selfh: superh:
     let
 
       callCabalOn = name: dir:
-        selfh.callCabal2nix "${name}" (gitignoreSource dir) { };
+        selfh.callCabal2nix "${name}" dir { };
 
     in mapAttrs callCabalOn contents.pkgList;
 
