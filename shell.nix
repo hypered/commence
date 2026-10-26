@@ -12,20 +12,9 @@ let
 
   contents = import ./nix/contents.nix { inherit nixpkgs; };
 
-  # Brittany, as the formatter, is just here as an example.
-  # I personally prefer to have the formatters pinned to a version and then
-  # made available via direnv to avoid unnecessary diff pollution across upgrades.
-
-  # Niv is great at pinning dependencies in sources.json and computing SHA's etc.
   nix-tooling = with hp; [ (callCabal2nix "niv" sources.niv { }) ];
 
-  # Haskell tools
   haskell-tooling = with hp; [ cabal-install ghcid hlint hasktags ];
-
-  # Add more as we need them.
-  formatters =
-    let brittany = hp.callCabal2nix "brittany" sources.brittany { };
-    in [ brittany ];
 
   system-tooling = with nixpkgs; [
     inotify-tools # needed for HotExe.sh (filesystem notifs.)
@@ -34,5 +23,5 @@ let
 
 in hp.shellFor {
   packages = p: map (contents.getPkg p) (builtins.attrNames contents.pkgList);
-  buildInputs = nix-tooling ++ haskell-tooling ++ system-tooling ++ formatters;
+  buildInputs = nix-tooling ++ haskell-tooling ++ system-tooling;
 }
